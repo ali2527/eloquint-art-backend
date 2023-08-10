@@ -28,7 +28,7 @@ const userSchema = new Schema(
      status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE"],
-      default: "ACTIVE",
+      default: "INACTIVE",
     },
     age: {
       type: Number,

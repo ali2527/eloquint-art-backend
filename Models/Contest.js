@@ -36,10 +36,6 @@ const contestSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user', // Assuming you have a 'User' schema for the winner
       },
-      votes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user', // Assuming you have a 'User' schema for the winner
-      }],
 }, {timestamps:true})
 
 contestSchema.plugin(mongoosePaginate);

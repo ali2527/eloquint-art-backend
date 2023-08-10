@@ -24,16 +24,16 @@ const SubscriptionSchema = mongoose.Schema(
     status: {
       type: String,
       enum: ["ACTIVE","INACTIVE","EXPIRED"],
-    default: "ACTIVE",
+    default: "INACTIVE",
+    },
+    charge_id:{
+      type: String,
+      required:false
     },
     amount: {
       type: Number,
       required:true
     },
-    is_paid:{
-      type:Boolean,
-      default:false
-    }
   },
   {
     timestamps: true,

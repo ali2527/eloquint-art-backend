@@ -8,6 +8,11 @@ const entrySchema = new mongoose.Schema({
         ref: 'contest',
         required: true,
       },
+      contestant:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true,
+      },
       image: {
         type: String, // You can store the image URL here
         required: true,

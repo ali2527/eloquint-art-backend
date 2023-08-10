@@ -22,11 +22,21 @@ const paymentSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
+    charge_id:{
+      type: String,
+      required: true,
+      default: "",
+    },
     type: {
       type: String,
       enum: ["SUBSCRIPTION", "CONTEST"],
       default: "SUBSCRIPTION",
     },
+    status:{
+      type: String,
+      enum: ["PAID", "UNPAID"],
+      default: "UNPAID",
+    }
   },
   { timestamps: true }
 );
