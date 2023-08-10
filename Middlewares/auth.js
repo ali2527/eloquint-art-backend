@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../Models/User")
-const Coach = require("../Models/Coach")
 const { ApiResponse } = require("../Helpers");
 const { errorHandler } = require("../Helpers/errorHandler");
 require("dotenv").config();
@@ -22,16 +21,15 @@ exports.authenticatedRoute = async (req, res, next) => {
     //finding user by id
     let user = await User.findById(decoded._id);
 
-    let coach = await Coach.findById(decoded._id)
-
+    
     console.log("coach",coach)
 
 
 
-    if (!user && !coach) {
+    if (!user) {
       return res.status(401).json(ApiResponse({}, "Unauthorized Access", false))
     }
-    req.user = user || coach;
+    req.user = user;
     next()
   } catch (err) {
     return res.status(401).send(ApiResponse({}, "Session expired, Please sign in again", false))

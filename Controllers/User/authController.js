@@ -23,22 +23,7 @@ const moment = require("moment");
 
 //signup
 exports.signup = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    birthday,
-    parent,
-    phoneNumber,
-    homeNumber,
-    school,
-    gradeLevel,
-    city,
-    state,
-    zip,
-    subjects,
-    email,
-    password,
-  } = req.body;
+  const { fullName, phoneNumber, age, email, password } = req.body;
   try {
     let user = await User.findOne({ email });
 
@@ -76,12 +61,6 @@ exports.signin = async (req, res) => {
         }
         if (!user.authenticate(password)) {
           return res.json(ApiResponse({}, "Invalid password!", false));
-        }
-
-        if (user.status === "PENDING") {
-          return res.json(
-            ApiResponse({}, "Your Account is Not Verified yet", false)
-          );
         }
 
         const token = generateToken(user);

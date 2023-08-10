@@ -1,5 +1,4 @@
 //Models
-const Coach = require("../../Models/Coach");
 const User = require("../../Models/User")
 const Chat = require("../../Models/Chat")
 

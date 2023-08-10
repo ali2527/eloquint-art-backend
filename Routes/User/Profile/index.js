@@ -1,5 +1,5 @@
 const express = require("express")
-const { getProfile,updateProfile,changePassword } = require("../../../Controllers/Student/profileController")
+const { getProfile,updateProfile,changePassword } = require("../../../Controllers/User/profileController")
 const router = express.Router()
 const { authenticatedRoute,adminRoute } = require("../../../Middlewares/auth")
 const {uploadFile} = require("../../../Middlewares/upload")

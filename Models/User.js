@@ -9,19 +9,10 @@ const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new Schema(
   {
-    firstName: {
+    fullName: {
       type: String,
       minlength: 3,
       required: true,
-    },
-    lastName: {
-      type: String,
-      minlength: 3,
-      required: true,
-    },
-    birthday: {
-      type: Date,
-      required:false,
     },
     email: {
       type: String,
@@ -30,46 +21,24 @@ const userSchema = new Schema(
       unique: true,
       dropDups: true,
     },
-    parent:{
-      type:String,
-      required: false,
-    },
     phoneNumber:{
       type: String,
-      
     },
-    homeNumber:{
-      type: String,
-    },
-    school: {
-      type: String,
-      default : ""
-    },
-    gradeLevel:{
-      type: String,
-    },
-    salt: String,
-    address: {
-      type: String,
-      required: false,
-    },
-    city: {
-      type: String,
-      required: false,
-    },
-    state: {
-      type: String,
-      required: false,
-    },
-    status: {
+     salt: String,
+     status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE"],
       default: "ACTIVE",
     },
-    zip: {
-      type: String,
-      minlength: 5,
+    age: {
+      type: Number,
     },
+    gender:{
+      type: String,
+    },
+    intrests:[{
+      type: String,
+    }],
     image: {
       type: String,
     },
@@ -80,23 +49,6 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    subjects: [
-       {
-          type: String,
-        },
-    ],
-    courses: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "course",
-      },
-    ],
-    coaches: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "coach",
-      },
-    ],
     tokens: [
       {
         token: {

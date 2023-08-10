@@ -1,5 +1,5 @@
 const express = require("express")
-const { signup,emailVerificationCode,verifyRecoverCode,resetPassword, signin } = require("../../../Controllers/Student/authController")
+const { signup,emailVerificationCode,verifyRecoverCode,resetPassword, signin } = require("../../../Controllers/User/authController")
 const router = express.Router()
 const { signupValidator , emailCodeValidator ,verifyCodeValidator,resetPasswordValidator,signinValidator } = require("../../../Validator/authValidator")
 

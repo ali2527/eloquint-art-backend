@@ -10,13 +10,13 @@ const paymentSchema = new Schema(
       required: true,
       default: "",
     },
-    lesson: {
+    subscription: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "lesson",
+      ref: "subscription",
     },
-    course: {
+    contest: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
+      ref: "contest",
     },
     payee: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,8 +24,8 @@ const paymentSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["LESSON", "COURSE"],
-      default: "LESSON",
+      enum: ["SUBSCRIPTION", "CONTEST"],
+      default: "SUBSCRIPTION",
     },
   },
   { timestamps: true }

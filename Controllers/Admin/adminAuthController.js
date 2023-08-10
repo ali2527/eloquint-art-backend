@@ -20,7 +20,7 @@ const dayjs = require("dayjs");
 
 //register
 exports.register = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { fullName, email, password } = req.body;
   try {
     let user = await User.findOne({ email });
 
@@ -31,8 +31,7 @@ exports.register = async (req, res) => {
     }
 
     user = new User({
-      firstName,
-      lastName,
+      fullName,
       email,
       password,
       isAdmin: true,
