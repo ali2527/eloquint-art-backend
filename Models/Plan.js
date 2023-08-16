@@ -28,10 +28,6 @@ const planSchema = new mongoose.Schema({
             type:String,
         }
     ],
-    numberOfBookings:{
-        type:Number,
-        required:true,
-    }
 }, {timestamps:true})
 
 planSchema.plugin(mongoosePaginate);

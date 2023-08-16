@@ -62,6 +62,9 @@ exports.signin = async (req, res) => {
         if (!user.authenticate(password)) {
           return res.json(ApiResponse({}, "Invalid password!", false));
         }
+        if(user.status == "INACTIVE"){
+          return res.json(ApiResponse({}, "Account Inactive!. Contact Site Admin", false));
+        }
 
         const token = generateToken(user);
 
@@ -107,7 +110,7 @@ exports.emailVerificationCode = async (req, res) => {
                   </p>
                 </div>
     `;
-    await generateEmail(email, "Zipper LMS - Password Reset", html);
+    await generateEmail(email, "Eloquint Art - Password Reset", html);
     return res.status(201).json({
       message:
         "Recovery status Has Been Emailed To Your Registered Email Address",

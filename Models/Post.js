@@ -17,11 +17,13 @@ const postSchema = new mongoose.Schema(
       ref: "user", // Assuming you have a 'user' schema
       required: true,
     },
-    tags: {
-      type: [String],
-      default: [],
-    },
     images: [
+      {
+        type: String,
+        required: false,
+      },
+    ],
+    videos: [
       {
         type: String,
         required: false,
@@ -54,6 +56,10 @@ const postSchema = new mongoose.Schema(
         createdAt: {
           type: Date,
           default: Date.now,
+        },
+        image:{
+          type: String,
+          required: false,
         },
         likes: [
           {

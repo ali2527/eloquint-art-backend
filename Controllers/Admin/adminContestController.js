@@ -29,7 +29,7 @@ exports.createContest = async (req, res) => {
   try {
     // Check if the student exists
     const existingContest = await Contest.findOne({title});
-    if (!existingContest) {
+    if (existingContest) {
       return res.json(ApiResponse({}, "Contest with this Title Already Exists", false));
     }
 

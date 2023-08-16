@@ -29,7 +29,7 @@ exports.getProfile = async (req, res) => {
 //update user
 exports.updateProfile = async (req, res) => {
   try {
-    console.log(req.user._id);
+    console.log("req.user._id");
     if (req.body.image) {
       let currentUser = await User.findById(req.user._id);
 

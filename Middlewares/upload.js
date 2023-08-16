@@ -41,7 +41,8 @@ exports.uploadFile = function (req, res, next) {
         file.mimetype === "image/jpeg" ||
         file.mimetype === "image/jpg" ||
         file.mimetype === "image/gif" ||
-        file.mimetype === "image/webop"
+        file.mimetype === "image/webp" ||
+        file.mimetype === "image/gif"
       ) {
         cb(null, true);
       } else if (!file) {
@@ -82,7 +83,10 @@ const uploadMultiple = multer({
       cb(new Error("File type not allowed"), false);
     }
   },
+  limits: {
+    files: 4, // Total maximum number of files (images + videos)
+  },
 });
 
-exports.uploadMultiple = uploadMultiple.fields([{ name: "image", maxCount: 1 }, { name: "video", maxCount: 1 }]);
+exports.uploadMultiple = uploadMultiple.fields([{ name: "image", maxCount: 4 }, { name: "video", maxCount: 4 }]);
 

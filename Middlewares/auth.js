@@ -21,11 +21,6 @@ exports.authenticatedRoute = async (req, res, next) => {
     //finding user by id
     let user = await User.findById(decoded._id);
 
-    
-    console.log("coach",coach)
-
-
-
     if (!user) {
       return res.status(401).json(ApiResponse({}, "Unauthorized Access", false))
     }

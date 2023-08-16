@@ -44,6 +44,13 @@ exports.getAllUsers = async (req, res) => {
   try {
     let finalAggregate = [];
 
+    finalAggregate.push({
+      $match: {
+       isAdmin:false
+      },
+    });
+
+
     if (keyword) {
       finalAggregate.push({
         $match: {
@@ -116,7 +123,7 @@ exports.getAllUsers = async (req, res) => {
           )
         );
       }
-      if (!users || users.docs.length == 0) {
+      if (!users) {
         return res.json(ApiResponse({}, "No students found", false));
       }
 
@@ -156,6 +163,22 @@ exports.updateUser = async (req, res) => {
     if (!user) {
       return res.json(ApiResponse({}, "No user found", false));
     }
+    return res.json(ApiResponse(user, "User updated successfully"));
+  } catch (error) {
+    return res.json(ApiResponse({}, error.message, false));
+  }
+};
+
+exports.toggleStatus  = async (req, res) => {
+  try {
+    let user = await User.findById(req.params.id);
+    if (!user) {
+      return res.json(ApiResponse({}, "No user found", false));
+    }
+
+    user.status = (user.status == "ACTIVE" ? "INACTIVE" : "ACTIVE")
+
+    await user.save()
     return res.json(ApiResponse(user, "User updated successfully"));
   } catch (error) {
     return res.json(ApiResponse({}, error.message, false));

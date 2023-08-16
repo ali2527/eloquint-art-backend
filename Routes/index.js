@@ -15,6 +15,9 @@ router.use('/chat', require('./Chat'))
 router.use('/contest', require('./Contest'))
 
 
+// post routes
+router.use('/post', require('./Post'))
+
 //payment routes
 // router.use('/payment', require('./Payment'))
 

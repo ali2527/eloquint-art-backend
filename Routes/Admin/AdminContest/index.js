@@ -8,8 +8,8 @@ const {contestValidator} = require("../../../Validator/contestValidator")
 
 router.post("/createContest",authenticatedRoute,contestValidator,createContest);
 router.post("/updateContest/:id",authenticatedRoute,updateContest);
-router.get("/getAllContests",authenticatedRoute,getAllContests);
-router.get("/getContestById/:id",authenticatedRoute,getContestById);
+router.get("/getAllContests",getAllContests);
+router.get("/getContestById/:id",getContestById);
 router.post("/deleteContest/:id",authenticatedRoute,deleteContest);
 
 module.exports = router
