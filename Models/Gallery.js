@@ -3,6 +3,10 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const gallerySchema = new mongoose.Schema({
+  author:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+  },
       image: {
         type: String, // You can store the image URL here
         required: true,
@@ -35,4 +39,4 @@ const gallerySchema = new mongoose.Schema({
 gallerySchema.plugin(mongoosePaginate);
 gallerySchema.plugin(aggregatePaginate);
 
-module.exports = mongoose.model("entry", gallerySchema)
+module.exports = mongoose.model("gallery", gallerySchema)

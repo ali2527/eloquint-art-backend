@@ -19,6 +19,10 @@ router.use('/contest', require('./Contest'))
 router.use('/post', require('./Post'))
 
 
+// gallery routes
+router.use('/gallery', require('./Gallery'))
+
+
 // plan routes
 router.use('/plan', require('./Plan'))
 
