@@ -18,6 +18,10 @@ router.use('/contest', require('./Contest'))
 // post routes
 router.use('/post', require('./Post'))
 
+
+// plan routes
+router.use('/plan', require('./Plan'))
+
 //payment routes
 // router.use('/payment', require('./Payment'))
 
@@ -35,3 +39,4 @@ router.use('/admin/queries', require('./Admin/AdminQuery'))
 
 
 module.exports = router;
+
