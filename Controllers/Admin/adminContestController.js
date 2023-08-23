@@ -1,6 +1,7 @@
 //Models
 const User = require("../../Models/User");
 const Contest = require("../../Models/Contest")
+const Payment = require("../../Models/Payment")
 const mongoose = require("mongoose");
 
 //Helpers
@@ -68,11 +69,40 @@ exports.updateContest = async (req, res) => {
       if (!contest) {
         return res.json(ApiResponse({}, "No contest found", false));
       }
+
+
+      
       return res.json(ApiResponse(contest, "Contest updated successfully"));
     } catch (error) {
       return res.json(ApiResponse({}, error.message, false));
     }
   };
+
+  //update contest
+exports.selectWinner = async (req, res) => {
+  let userId = req.body.userId
+  try {
+    let contest = await Contest.findByIdAndUpdate(req.params.id, {winner:userId}, {
+      new: true,
+    });
+    if (!contest) {
+      return res.json(ApiResponse({}, "No contest found", false));
+    }
+
+    contest.status = "FINISHED"
+    await contest.save()
+
+    let payment = await Payment.findOne({contest:req.params.id,payee:userId,status:"PAID"})
+
+    payment.entry_status = "WINNER"
+
+      await payment.save()
+
+    return res.json(ApiResponse(contest, "Winner Selected successfully"));
+  } catch (error) {
+    return res.json(ApiResponse({}, error.message, false));
+  }
+};
 
 
 //get all contests with pagination
@@ -175,10 +205,16 @@ exports.getContestById = async (req, res) => {
 //delete contest
 exports.deleteContest = async (req, res) => {
     try {
+      const oldContest = await Contest.findById(req.params.id);
+      if (oldContest.status !== "FINISHED") {
+        return res.json(ApiResponse({}, "Contest cannot be deleted before Finished", false));
+      }
+      
       const contest = await Contest.findByIdAndDelete(req.params.id);
       if (!contest) {
         return res.json(ApiResponse({}, "No contest found", false));
       }
+      
       return res.json(ApiResponse({}, "Contest Deleted Successfully",true));
     } catch (error) {
       return res.json(ApiResponse({}, error.message, false));

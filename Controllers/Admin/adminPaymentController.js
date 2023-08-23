@@ -46,6 +46,28 @@ exports.getAllSubscriptionPayments = async (req, res) => {
       },
       {
         $unwind: "$payee",
+      },
+      {
+        $lookup: {
+          from: "subscriptions",
+          localField: "subscription",
+          foreignField: "_id",
+          as: "subscription",
+        },
+      },
+      {
+        $unwind: "$subscription",
+      },
+      {
+        $lookup: {
+          from: "plans",
+          localField: "subscription.plan",
+          foreignField: "_id",
+          as: "subscription.plan",
+        },
+      },
+      {
+        $unwind: "$subscription.plan",
       }
     );
 
@@ -145,6 +167,17 @@ exports.getAllContestPayments = async (req, res) => {
       },
       {
         $unwind: "$payee",
+      },
+      {
+        $lookup: {
+          from: "contests",
+          localField: "contest",
+          foreignField: "_id",
+          as: "contest",
+        },
+      },
+      {
+        $unwind: "$contest",
       }
     );
 

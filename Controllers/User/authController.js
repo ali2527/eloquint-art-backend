@@ -52,8 +52,8 @@ exports.signin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    User.findOne({ email })
-      .then((user) => {
+    User.findOne({ email,isAdmin:false })
+      .then(async(user) => {
         if (!user) {
           return res.json(
             ApiResponse({}, "User with this email not found", false)
@@ -64,6 +64,12 @@ exports.signin = async (req, res) => {
         }
         if(user.status == "INACTIVE"){
           return res.json(ApiResponse({}, "Account Inactive!. Contact Site Admin", false));
+        }
+
+        let currentSubscription =await Subscription.findOne({ customer: user._id })
+
+        if (!currentSubscription) {
+          return res.json(ApiResponse({user},"Users Subscription not Found", false));
         }
 
         const token = generateToken(user);

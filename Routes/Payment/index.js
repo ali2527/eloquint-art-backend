@@ -4,9 +4,9 @@ const router = express.Router()
 const { authenticatedRoute,adminRoute } = require("../../Middlewares/auth")
 const {paymentValidator} = require("../../Validator/paymentValidator")
 
-router.post("/contestPayment",addQueryValidator, contestPayment);
-router.post("/subscriptionPayment", authenticatedRoute,subscriptionPayment);
-router.post("/getMyPaymentLogs", authenticatedRoute,getMyPaymentLogs);
+router.post("/contestPayment",authenticatedRoute,paymentValidator, contestPayment);
+router.post("/subscriptionPayment", paymentValidator,subscriptionPayment);
+router.get("/getMyPaymentLogs", authenticatedRoute,getMyPaymentLogs);
 
 
 module.exports = router

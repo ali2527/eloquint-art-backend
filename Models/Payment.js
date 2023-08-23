@@ -36,6 +36,11 @@ const paymentSchema = new Schema(
       type: String,
       enum: ["PAID", "UNPAID"],
       default: "UNPAID",
+    },
+    entry_status:{
+      type: String,
+      enum: ["RECIEVED", "UNRECIEVED","WINNER"],
+      default: "UNRECIEVED",
     }
   },
   { timestamps: true }

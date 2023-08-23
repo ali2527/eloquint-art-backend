@@ -26,8 +26,8 @@ router.use('/gallery', require('./Gallery'))
 // plan routes
 router.use('/plan', require('./Plan'))
 
-//payment routes
-// router.use('/payment', require('./Payment'))
+// payment routes
+router.use('/payment', require('./Payment'))
 
 // //message routes 
 // router.use('/message', require('./Message'))
@@ -38,6 +38,7 @@ router.use('/admin/user', require('./Admin/AdminUser'))
 router.use('/admin/payment', require('./Admin/AdminPayment'))
 router.use('/admin/contests', require('./Admin/AdminContest'))
 router.use('/admin/queries', require('./Admin/AdminQuery'))
+router.use('/admin/entries', require('./Admin/AdminEntry'))
 
 
 

@@ -37,10 +37,10 @@ exports.contestPayment = async (req, res) => {
       return res.status(400).json(ApiResponse({},"Contest not found", false));
     }
 
-    let currentEntry = Entry.findOne({ contestant: userId, contest: contestId })
+    let currentpayment =await Payment.findOne({type:"CONTEST", payee: req.user._id, status: "PAID" })
 
-    if (!currentEntry) {
-      return res.status(400).json(ApiResponse({},"User is already Contestant in this contest", false));
+    if (currentpayment) {
+      return res.status(200).json(ApiResponse({},"User has already Paid for in this contest", true));
     }
 
     let charge = "";
@@ -91,8 +91,7 @@ exports.contestPayment = async (req, res) => {
 };
 
 exports.subscriptionPayment = async (req, res) => {
-  const { planId, cardNumber, month, year, cvv } = req.body;
-  let userId = req.user._id
+  const {userId, planId, cardNumber, month, year, cvv } = req.body;
 
   try {
 
@@ -101,12 +100,14 @@ exports.subscriptionPayment = async (req, res) => {
       return res.status(400).json(ApiResponse({},"Plan not found", false));
     }
 
-    let currentSubscription = Subscription.findOne({ customer: userId, status: "ACTIVE" })
+    let currentSubscription =await Subscription.findOne({ customer: userId, status: "ACTIVE" })
 
-    if (!currentSubscription) {
+    if (currentSubscription) {
       return res.status(400).json(ApiResponse({},"Users Subscription is currently active", false));
     }
 
+
+    
     let charge = "";
     let token = await stripe.tokens.create({
       card: {
@@ -119,14 +120,14 @@ exports.subscriptionPayment = async (req, res) => {
     if (token.error) {
       return res.status(400).json(ApiResponse({},token.error, false));
     }
+
     charge = await stripe.charges.create({
-      amount: planId.price * 100,
+      amount: plan.price * 100,
       description: "Eloquint Art",
       currency: "usd",
       source: token.id,
     });
-    console.log("Charges", charge);
-
+  
     let subscription = new Subscription({
       customer:userId,
       plan: planId,
@@ -144,7 +145,7 @@ exports.subscriptionPayment = async (req, res) => {
       subscription: subscription._id,
       charge_id: charge.id ? charge.id : null,
       amount: plan.price,
-      payee: req.user._id ? req.user._id : null,
+      payee: userId ? userId : null,
       type: "SUBSCRIPTION",
       status: charge.id ? "PAID" : "UNPAID",
     });
@@ -175,6 +176,11 @@ exports.getMyPaymentLogs = async (req, res) => {
     finalAggregate.push(
       {
         $match: {
+          type:"SUBSCRIPTION",
+        }
+      },
+      {
+        $match: {
           payee:new mongoose.Types.ObjectId(req.user._id),
         }
       },
@@ -188,7 +194,29 @@ exports.getMyPaymentLogs = async (req, res) => {
       },
       {
         $unwind: "$payee",
-      }
+      },
+      {
+        $lookup: {
+          from: "subscriptions",
+          localField: "subscription",
+          foreignField: "_id",
+          as: "subscription",
+        },
+      },
+      {
+        $unwind: "$subscription",
+      },
+      {
+        $lookup: {
+          from: "plans",
+          localField: "subscription.plan",
+          foreignField: "_id",
+          as: "subscription.plan",
+        },
+      },
+      {
+        $unwind: "$subscription.plan",
+      },
     );
 
     if (keyword) {

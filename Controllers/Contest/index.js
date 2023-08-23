@@ -19,6 +19,117 @@ const {
 
 
 
+
+//get all contests with pagination
+exports.getAllMyContests = async (req, res) => {
+  const { page = 1, limit = 10, status, from, to, keyword } = req.query;
+  try {
+    let finalAggregate = [];
+
+    finalAggregate.push({
+      $match:{
+        payee:req.user._id
+      }
+    },
+    {
+      $match:{
+        type:"CONTEST"
+      }
+    },
+    {
+      $match:{
+        status:"PAID"
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "payee",
+        foreignField: "_id",
+        as: "payee",
+      },
+    },
+    {
+      $unwind: "$payee",
+    },
+    {
+      $lookup: {
+        from: "contests",
+        localField: "contest",
+        foreignField: "_id",
+        as: "contest",
+      },
+    },
+    {
+      $unwind: "$contest",
+    })
+
+    if (keyword) {
+      finalAggregate.push({
+        $match: {
+          $or: [
+            {
+              "payee.fullName": {
+                $regex: ".*" + keyword.toLowerCase() + ".*",
+                $options: "i",
+              },
+            },
+          ],
+        },
+      });
+    }
+
+
+    if (from) {
+      finalAggregate.push({
+        $match: {
+          createdAt: {
+            $gte: moment(from).startOf("day").toDate(),
+            $lte: moment(new Date()).endOf("day").toDate(),
+          },
+        },
+      });
+    }
+
+    if (to) {
+      finalAggregate.push({
+        $match: {
+          createdAt: {
+            $lte: moment(to).endOf("day").toDate(),
+          },
+        },
+      });
+    }
+
+   
+
+    const myAggregate =
+      finalAggregate.length > 0
+        ? Payment.aggregate(finalAggregate).sort({ createdAt: -1 })
+        : Payment.aggregate([]);
+
+    Payment.aggregatePaginate(myAggregate, { page, limit }, (err, contests) => {
+      if (err) {
+        return res.json(
+          ApiResponse(
+            {},
+            errorHandler(err) ? errorHandler(err) : err.message,
+            false
+          )
+        );
+      }
+      if (!contests) {
+        return res.json(ApiResponse({}, "No contests found", false));
+      }
+
+      return res.json(ApiResponse(contests));
+    });
+  } catch (error) {
+    return res.json(ApiResponse({}, error.message, false));
+  }
+};
+
+
 //addQuery
 exports.joinContest = async (req, res) => {
     const { contestId, image } = req.body;
@@ -30,14 +141,26 @@ exports.joinContest = async (req, res) => {
         return res.status(200).json(ApiResponse({},"Contest Not Found",false));
       }
       
-      let payment = Payment.findOne({contest:contestId,payee:req.user._id,status:"PAID"})
+      let payment =await Payment.findOne({contest:contestId,payee:req.user._id,status:"PAID"})
 
       if(!payment){
         return res.status(200).json(ApiResponse({},"Contest Payment Not Found",false));
       }
 
+      let existingEntry =await Entry.findOne({contest:contestId,contestant:req.user._id})
+
+      if(existingEntry){
+        return res.status(200).json(ApiResponse({},"Submission already Made",false));
+      }
+
+
+      payment.entry_status = "RECIEVED"
+
+      await payment.save()
+
       const entry = new Entry({
-        contestId,
+        contest :contestId,
+        contestant:req.user._id,
         image,
       });
   
@@ -63,7 +186,7 @@ exports.voteContest = async (req, res) => {
   try {
 
 
-    let entry = Entry.findById(entryId)
+    let entry =await Entry.findById(entryId)
 
       if(!entry){
         return res.status(200).json(ApiResponse({},"Entry Not Found",false));
