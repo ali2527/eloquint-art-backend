@@ -91,7 +91,10 @@ exports.contestPayment = async (req, res) => {
 };
 
 exports.subscriptionPayment = async (req, res) => {
+  
   const {userId, planId, cardNumber, month, year, cvv } = req.body;
+
+  console.log(req.body)
 
   try {
 
@@ -158,10 +161,11 @@ exports.subscriptionPayment = async (req, res) => {
 
     return res.status(200).json(ApiResponse({},"Payment Successful", true));   
   } catch (error) {
+    console.log("error.message",error.message)
     return res.json(
       ApiResponse(
         {},
-        errorHandler(error) ? errorHandler(error) : error.message,
+        error.message  ? error.message :  errorHandler(error) ,
         false
       )
     );

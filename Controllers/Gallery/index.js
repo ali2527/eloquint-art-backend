@@ -41,6 +41,29 @@ exports.addGallery = async (req, res) => {
   }
 };
 
+exports.addAdminGallery = async (req, res) => {
+  let {image} = req.body;
+  let userId = req.user._id
+try {
+
+  const gallery = new Gallery({image,author:userId,isAdmin:true});
+
+    await gallery.save();
+
+    return res.status(200).json(
+      ApiResponse(
+        { gallery },
+
+        "Image Added Successfully",
+        true
+      )
+    );
+
+} catch (error) {
+  return res.json( ApiResponse( {},errorHandler(error) ? errorHandler(error) : error.message, false));
+}
+};
+
 exports.getAllGallery =async (req, res) => {
       const { page = 1, limit = 10 } = req.query;
    
@@ -55,6 +78,26 @@ exports.getAllGallery =async (req, res) => {
       });
     
   };
+
+
+  exports.getAllAdminGallery =async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+ 
+    let myAggregate = Gallery.aggregate([{
+      $match:{
+          isAdmin : true
+      }
+    },{
+      $sort:{
+          createdAt : -1
+      }
+    }]);
+
+    Gallery.aggregatePaginate(myAggregate, { page, limit }).then((gallery) => {
+      return res.status(200).send(ApiResponse(gallery));
+    });
+  
+};
 
 
 exports.getMyGallery = async (req, res) => {
@@ -129,7 +172,7 @@ exports.getMyGallery = async (req, res) => {
     const userId = req.user._id;
     const { text } = req.body;
     try {
-        const gallery = await Gallery.findById(postId);
+        const gallery = await Gallery.findById(galleryId);
 
         if (!gallery) {
             return res.status(404).json(ApiResponse({}, "Image not found", false));
@@ -177,3 +220,24 @@ exports.getMyGallery = async (req, res) => {
       );
     }
   };
+
+  
+  exports.deleteAllGallery =async  (req, res) => {
+
+    try {
+        let gallery =await  Gallery.deleteMany()
+
+
+          res.status(200).json(ApiResponse({}, "Image Deleted Successfully", true));
+
+    } catch (error) {
+      return res.json(
+        ApiResponse(
+          {},
+          errorHandler(error) ? errorHandler(error) : error.message,
+          false
+        )
+      );
+    }
+  };
+
